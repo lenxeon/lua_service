@@ -113,9 +113,12 @@ if not file_exists(ori_file_path) then
             ["User-Agent"] = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.111 Safari/537.36"
         }
     })
-    ngx.header["step"] = 3.1;
+    ngx.header["step"] = 3.10;
     -- 如果下载图片的时候异常了
-    if not resp or resp.status >=300 then
+    if not resp then
+        ngx.header["resp"] = "nil";
+    end
+    if resp.status >=300 then
         ngx.header["status"] = resp.status;
         ------ngx.header["down error"] = err;
         -- ngx.say("request error :", err)
@@ -132,10 +135,10 @@ if not file_exists(ori_file_path) then
         ngx.header["ori_file_path"] = ori_file_path;
         writefile(ori_file_path, resp.body)
         ngx.header["writefile"] = "ok";
-        -- ngx.say(resp.body);
+        ngx.say(resp.body);
     end
     httpc:close()
-    ------ngx.header["step"] = 3;
+    ngx.header["step"] = 3;
 end
 
 
