@@ -100,7 +100,7 @@ if not file_exists(ori_file_path) then
     local httpc = http.new()
     url = (string.gsub(url, "www.6study.com", "127.0.0.1"))
     url = (string.gsub(url, "6study.com", "127.0.0.1"))
-    url = (string.gsub(url, "localhost", "127.0.0.1"))
+    -- url = (string.gsub(url, "localhost", "127.0.0.1"))
 
     ngx.header["url"] = "["..url.."]";
     -- ngx.exit(200)
@@ -108,7 +108,7 @@ if not file_exists(ori_file_path) then
     local resp, err = httpc:request_uri(url, {
         method = "GET",
         --path = "",
-	ssl_verify = false,
+	      ssl_verify = false,
         headers = {
             ["User-Agent"] = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.111 Safari/537.36"
         }
@@ -116,7 +116,7 @@ if not file_exists(ori_file_path) then
     ngx.header["step"] = 3.1;
     -- 如果下载图片的时候异常了
     if not resp or resp.status >=300 then
-        ngx.header["step"] = 3.2;
+        ngx.header["status"] = resp.status;
         ------ngx.header["down error"] = err;
         -- ngx.say("request error :", err)
         ngx.exit(404)
@@ -126,10 +126,13 @@ if not file_exists(ori_file_path) then
             ngx.header["mkdir"] = "mkdir -p " .. dir;
             os.execute("mkdir -p " .. dir)
         end
+        ngx.header["mked"] = "ok";
         --响应体
         --------ngx.header["writefile"] = "true";
-        ------ngx.header["ori_file_path"] = ori_file_path;
+        ngx.header["ori_file_path"] = ori_file_path;
         writefile(ori_file_path, resp.body)
+        ngx.header["writefile"] = "ok";
+        -- ngx.say(resp.body);
     end
     httpc:close()
     ------ngx.header["step"] = 3;
