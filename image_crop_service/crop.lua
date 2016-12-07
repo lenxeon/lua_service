@@ -135,7 +135,7 @@ if not file_exists(ori_file_path) then
         ngx.header["ori_file_path"] = ori_file_path;
         writefile(ori_file_path, resp.body)
         ngx.header["writefile"] = "ok";
-        ngx.say(resp.body);
+        -- ngx.say(resp.body);
     end
     httpc:close()
     ngx.header["step"] = 3;
