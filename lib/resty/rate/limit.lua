@@ -68,6 +68,17 @@ function _M.limit(config)
     ngx.log(log_level, "failed to require redis")
     ngx.header["step"] = 2;
 
+    -- 这一段为了控制是否是服务器维护模式
+    if model == 'debug' and not self_addr then
+        ngx.say('{"status_code":25,"status_message":"尊敬的用户您服务器正在维护,请稍后"}')
+        ngx.exit(ngx.HTTP_OK)
+    end
+
+    -- 这一段表示不控制
+    if model == 'release' then
+        return
+    end
+
     -- 下面这一段主要目的为首次初始化redis的连接
     if not config.connection then
         local ok, redis = pcall(require, "resty.redis")
@@ -104,12 +115,6 @@ function _M.limit(config)
     local model = config.model or ngx.var.model -- 运行模式
     local ips = {"127.0.0.1"} --这儿设置自己的办公室的固定ip
     local self_addr = in_array(ngx.var.remote_addr, ips) --判断是否是允许范围内的ip
-
-    -- 这一段为了控制是否是服务器维护模式
-    if model == 'debug' and not self_addr then
-        ngx.say('{"status_code":25,"status_message":"服务器正在维护，时间：2016-06-21 18:00 - 2016-07-01 08:00"}')
-        ngx.exit(ngx.HTTP_OK)
-    end
 
     local response, error = bump_request(connection, redis_pool_size, key, rate, interval, current_time, log_level)
     
