@@ -69,8 +69,8 @@ function _M.limit(config)
     ngx.header["step"] = model;
 
     -- 这一段为了控制是否是服务器维护模式
-    if model == 'debug' and not self_addr then
-        ngx.say('{"status_code":25,"status_message":"尊敬的用户您服务器正在维护,请稍后"}')
+    if model == 'debug' then
+        ngx.say('{"status_code":25,"status_message":"用户您好，服务器正在维护中,请稍后"}')
         ngx.exit(ngx.HTTP_OK)
     end
 
