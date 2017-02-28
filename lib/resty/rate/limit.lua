@@ -66,7 +66,7 @@ end
 function _M.limit(config)
     local log_level = config.log_level or ngx.ERR
     ngx.log(log_level, "failed to require redis")
-    ngx.header["step"] = 2;
+    ngx.header["step"] = model;
 
     -- 这一段为了控制是否是服务器维护模式
     if model == 'debug' and not self_addr then
