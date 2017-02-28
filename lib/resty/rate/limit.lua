@@ -67,16 +67,12 @@ function _M.limit(config)
     local log_level = config.log_level or ngx.ERR
     ngx.log(log_level, "failed to require redis")
     local var = ngx.var
-    ngx.header["step"] = 1;
-    ngx.header["model"] = var.model;
 
     -- 这一段为了控制是否是服务器维护模式
     if var.model == 'debug' then
-        ngx.header["step"] = 2;
-        ngx.say('{"status_code":25,"status_message":"用户您好，服务器正在维护中,请稍后"}')
+        ngx.say('{"result":-1,"msg":"用户您好，服务器正在维护中,请稍后"}')
         ngx.exit(ngx.HTTP_OK)
     end
-    ngx.header["step"] = 3;
 
     -- 这一段表示不控制
     if var.model == 'release' then
